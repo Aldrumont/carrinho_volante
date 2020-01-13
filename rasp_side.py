@@ -35,7 +35,7 @@ def joystick_values_interpreter(data):
     for key in key_names:
         # print(data)
         if key_names[key] not in data:
-            print(f"Not found the {key} ({key_names[key]}) ")
+            print("Not found the " + key +" ("+  key_names[key]+")")
         else: 
             if key == "acelerator_key":
                 output_value = correct_output_number(data[key_names[key]],joystick_analogic_limits,acelerator_motor_limits)
