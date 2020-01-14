@@ -13,15 +13,15 @@ logging.basicConfig(level=logging.DEBUG,
                     format='[%(levelname)s] (%(threadName)-10s) %(message)s',
                     )
 def on_publish(client,userdata,result):             #create function for callback
-        logging.debug('message published')
+        logging.debug('message published \r')
         pass
 
 def mqtt_publisher(message,broker=broker,topic = topic,port=port):
     client1= paho.Client("control1")                           #create client object
     client1.on_publish = on_publish                          #assign function to callback
     client1.connect(broker,port)  
-    ret = client1.publish(topic,message) 
-
+    ret = client1.publish(topic,message)
+    
 def joystick_values():
     logging.debug('Starting get joystick values')
     # time.sleep(2)

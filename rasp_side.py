@@ -1,19 +1,19 @@
+from __future__ import print_function
 import paho.mqtt.client as mqtt
 import json
 import logging
 import threading
 import motor_control
 
-broker="localhost"
+broker="192.168.110.125"
 topic = "test"
 port=1883
 
-key_names = {"acelerator_key" : "A0", "brake_key" : "A3", "steering_wheel_key":"A2"}
+key_names = {"pedal_key" : "A1", "steering_wheel_key":"A0"}
 important_values = key_names.copy()
 joystick_analogic_limits = (0,255)
-steering_motor_limits=(-30,30)
-acelerator_motor_limits=(5,0)
-brake_motor_limits=(0,-5)
+steering_motor_limits=(-10.0,10.0)
+pedal_motor_limits=(1.0,-1.0)
 control = motor_control.motor_control_class()
 
 logging.basicConfig(level=logging.DEBUG,
@@ -37,10 +37,8 @@ def joystick_values_interpreter(data):
         if key_names[key] not in data:
             print("Not found the " + key +" ("+  key_names[key]+")")
         else: 
-            if key == "acelerator_key":
-                output_value = correct_output_number(data[key_names[key]],joystick_analogic_limits,acelerator_motor_limits)
-            elif key == "brake_key":
-                output_value = correct_output_number(data[key_names[key]],joystick_analogic_limits,brake_motor_limits)
+            if key == "pedal_key":
+                output_value = correct_output_number(data[key_names[key]],joystick_analogic_limits,pedal_motor_limits)
             elif key == "steering_wheel_key":
                 output_value = correct_output_number(data[key_names[key]],joystick_analogic_limits,steering_motor_limits)
             important_values[key] = output_value
