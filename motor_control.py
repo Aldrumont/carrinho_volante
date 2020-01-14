@@ -1,8 +1,8 @@
 from gpiozero import PWMOutputDevice, AngularServo
 from time import sleep
 
-acelerator_pin = 19
-brake_pin = 26
+acelerator_pin = 26
+brake_pin = 19
 steering_wheel_key_pin = 4
 
 class motor_control_class():
@@ -16,14 +16,20 @@ class motor_control_class():
         self.brake = PWMOutputDevice(brake_pin, True, 0, 1000)
         self.steering_wheel = AngularServo(steering_wheel_key_pin, min_angle=-10.0, max_angle=10.0)
 
-    def run(self,values,correction=1.5,servo_constant=-6):
+    def run(self,values,correction=2,servo_constant=-6):
         print(values)
-        pedal_value = values["pedal_key"]/correction
-        if pedal_value > 0:
-            self.acelerator.value = pedal_value
+        pedal_value = values["pedal_key"]
+        steering_value = values["steering_wheel_key"]
+        if abs(pedal_value) <= 0.5:
+            self.brake.value = 0
+            self.acelerator.value = 0
+        elif pedal_value > 0:
+            self.acelerator.value = pedal_value/correction
+            self.brake.value = 0
         else:
-            self.brake.value = -pedal_value
-        self.steering_wheel.angle = values["steering_wheel_key"]+servo_constant
+            self.acelerator.value = 0
+            self.brake.value = -pedal_value/correction
+        self.steering_wheel.angle = -steering_value
         # print(self.steering_wheel.angle)
         print("Acelerador ",self.acelerator.value, "freio ",self.brake.value, "angulo ",self.steering_wheel.angle)
 
