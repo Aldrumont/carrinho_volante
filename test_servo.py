@@ -2,7 +2,7 @@ from gpiozero import AngularServo
 from time import sleep
 
 servo = AngularServo(4, min_angle=-22.5, max_angle=22.5)
-constant = 6
+constant = 0
 while True:
     servo.angle = 0-constant
     sleep(2)

@@ -9,10 +9,10 @@ broker="192.168.110.125"
 topic = "test"
 port=1883
 
-key_names = {"pedal_key" : "A3", "steering_wheel_key":"A2"}
+key_names = {"pedal_key" : "A1", "steering_wheel_key":"A0"}
 important_values = key_names.copy()
 joystick_analogic_limits = (0,255)
-steering_motor_limits=(-10.0,10.0)
+steering_motor_limits=(-15.0,15.0)
 pedal_motor_limits=(1.0,-1.0)
 control = motor_control.motor_control_class()
 
@@ -33,7 +33,7 @@ def mqtt_loop(broker=broker,topic = topic,port=port):
 
 def joystick_values_interpreter(data):
     for key in key_names:
-        # print(data)
+        print(data)
         if key_names[key] not in data:
             print("Not found the " + key +" ("+  key_names[key]+")")
         else: 
