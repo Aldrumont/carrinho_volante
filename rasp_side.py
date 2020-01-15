@@ -4,7 +4,7 @@ import json
 import logging
 import threading
 import motor_control
-# from camera import *
+from camera import *
 
 broker="192.168.110.125"
 topic = "test"
@@ -17,6 +17,7 @@ steering_motor_limits=(-15.0,15.0)
 pedal_motor_limits=(1.0,-1.0)
 control = motor_control.motor_control_class()
 output_values = 0
+cam = MyOutput()
 
 logging.basicConfig(level=logging.DEBUG,
                     format='[%(levelname)s] (%(threadName)-10s) %(message)s',
@@ -26,6 +27,12 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     message=json.loads(msg.payload)
     joystick_values_interpreter(message)
+def mqtt_loop(broker=broker,topic = topic,port=port):
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.connect(broker, port)
+    client.loop_forever()
 
 def joystick_values_interpreter(data):
     for key in key_names:
@@ -38,21 +45,26 @@ def joystick_values_interpreter(data):
             elif key == "steering_wheel_key":
                 output_value = correct_output_number(data[key_names[key]],joystick_analogic_limits,steering_motor_limits)
             important_values[key] = output_value
+
     # print(important_values)
     output_values = control.run(important_values)
+    print(8)
+    cam.register(output_values)
+
+def enable_camera():
+    enabled_cam = MyOutput()
+    enabled_cam.record()
+
 
 
 def correct_output_number(x, input_limits, output_limits):
   return (x - input_limits[0]) * (output_limits[1] - output_limits[0]) / (input_limits[1] - input_limits[0]) + output_limits[0]
 
+thread_mqtt_loop = threading.Thread(name='mqtt_loop', target=mqtt_loop)
+thread_mqtt_loop.start()
 
+thread_enable_camera = threading.Thread(name='enable_camera', target=enable_camera)
+thread_enable_camera.start()
 
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
-client.connect(broker, port)
-client.loop_forever()
-
-print(9)
 
 
