@@ -17,7 +17,7 @@ class motor_control_class():
         self.steering_wheel = AngularServo(steering_wheel_key_pin, min_angle=-15.0, max_angle=15.0)
 
     def run(self,values,correction=1.5,servo_constant=-6):
-        print(values)
+        # print(values)
         pedal_value = values["pedal_key"]
         steering_value = values["steering_wheel_key"]
         if abs(pedal_value) <= 0.3:
@@ -31,7 +31,8 @@ class motor_control_class():
             self.brake.value = -pedal_value/correction
         self.steering_wheel.angle = -steering_value
         # print(self.steering_wheel.angle)
-        print("Acelerador ",self.acelerator.value, "freio ",self.brake.value, "angulo ",self.steering_wheel.angle)
-
+        output_values = {"Acelerador":self.acelerator.value,"freio":self.brake.value, "angulo":-self.steering_wheel.angle}
+        # print(output_values)
+        return output_values
         
  
