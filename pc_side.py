@@ -21,6 +21,7 @@ def mqtt_publisher(message,broker=broker,topic = topic,port=port):
     client1.on_publish = on_publish                          #assign function to callback
     client1.connect(broker,port)  
     ret = client1.publish(topic,message)
+    print(message)
     
 def joystick_values():
     logging.debug('Starting get joystick values')
